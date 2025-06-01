@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="./css/style.css" />
+  <title>Estacionamento - Painel Completo</title>
+</head>
+<body>
+  <main>
+    <h1>Estacionamento</h1>
+
+    <nav>
+      <ul>
+        <li><a href="#entrada">Registrar Entrada</a></li>
+        <li><a href="#verificar">Verificar Veículo Presente</a></li>
+        <li><a href="#saida">Registrar Saída</a></li>
+        <li><a href="#cancelar">Cancelar Registro</a></li>
+        <li><a href="#relatorio">Relatório Diário</a></li>
+        <li><a href="#vagas">Vagas Disponíveis</a></li>
+        <li><a href="#tempo">Tempo de Permanência</a></li>
+        <li><a href="#ativos">Veículos Ativos</a></li>
+      </ul>
+    </nav>
+
+    <section id="entrada">
+      <h2>Registrar Entrada</h2>
+      <form id="formEntry">
+        <p>
+          <label for="plateEntry">Placa (ex: 1234)</label><br />
+          <input type="text" id="plateEntry" name="plateEntry" required />
+        </p>
+        <p>
+          <label for="modelEntry">Modelo (ex: Civic)</label><br />
+          <input type="text" id="modelEntry" name="modelEntry" />
+        </p>
+        <p>
+          <button type="submit">Registrar Entrada</button>
+        </p>
+      </form>
+      <div id="msgEntry" role="alert"></div>
+    </section>
+
+    <section id="verificar">
+      <h2>Verificar Veículo Presente</h2>
+      <form id="formCheck">
+        <p>
+          <label for="plateCheck">Placa</label><br />
+          <input type="text" id="plateCheck" name="plateCheck" required />
+        </p>
+        <p>
+          <button type="submit">Verificar</button>
+        </p>
+      </form>
+      <div id="msgCheck" role="alert"></div>
+    </section>
+
+    <section id="saida">
+      <h2>Registrar Saída</h2>
+      <form id="formExit">
+        <p>
+          <label for="plateExit">Placa</label><br />
+          <input type="text" id="plateExit" name="plateExit" required />
+        </p>
+        <p>
+          <button type="submit">Registrar Saída</button>
+        </p>
+      </form>
+      <div id="msgExit" role="alert"></div>
+    </section>
+
+    <section id="cancelar">
+      <h2>Cancelar Registro</h2>
+      <form id="formCancel">
+        <p>
+          <label for="plateCancel">Placa</label><br />
+          <input type="text" id="plateCancel" name="plateCancel" required />
+        </p>
+        <p>
+          <button type="submit">Cancelar Registro</button>
+        </p>
+      </form>
+      <div id="msgCancel" role="alert"></div>
+    </section>
+
+    <section id="relatorio">
+      <h2>Relatório Diário</h2>
+      <p>
+        <button id="btnReport">Ver Relatório</button>
+      </p>
+      <pre id="reportResult" aria-live="polite"></pre>
+    </section>
+
+    <section id="vagas">
+      <h2>Vagas Disponíveis</h2>
+      <p>
+        <button id="btnSlots">Ver Vagas</button>
+      </p>
+      <div id="slotsResult" aria-live="polite"></div>
+    </section>
+
+    <section id="tempo">
+      <h2>Tempo de Permanência</h2>
+      <form id="formTime">
+        <p>
+          <label for="plateTime">Placa</label><br />
+          <input type="text" id="plateTime" name="plateTime" required />
+        </p>
+        <p>
+          <button type="submit">Ver Tempo</button>
+        </p>
+      </form>
+      <div id="timeResult" aria-live="polite"></div>
+    </section>
+
+    <section id="ativos">
+      <h2>Veículos Ativos</h2>
+      <p>
+        <button id="btnActiveVehicles">Ver Veículos Ativos</button>
+      </p>
+      <div id="activeVehicles" aria-live="polite"></div>
+    </section>
+
+  </main>
+
+  <script src="./js/script.js"></script>
+</body>
+</html>
+

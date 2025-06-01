@@ -146,29 +146,33 @@ const estacionamentoApp = {
     }
   },
 
-  async getActiveVehicles() {
-    const div = document.querySelector('#activeVehicles');
-    div.textContent = 'Carregando...';
+async getActiveVehicles() {
+  const div = document.querySelector('#activeVehicles');
+  div.textContent = 'Carregando...';
 
-    try {
-      const data = await this.request('/active');
-      const vehicles = data.vehicles || data;
+  try {
+    const data = await this.request('/active');
+    const vehicles = data.vehicles || data;
 
-      if (!vehicles || vehicles.length === 0) {
-        div.textContent = 'Nenhum veículo ativo encontrado.';
-        return;
-      }
-
-      let text = 'Veículos ativos:\n\n';
-      vehicles.forEach(v => {
-        text += `Placa: ${v.plate}\nModelo: ${v.model}\nEntrada: ${this.formatDate(v.entryTime)}\n\n`;
-      });
-
-      div.textContent = text;
-    } catch (error) {
-      div.textContent = 'Erro: ' + error.message;
+    if (!vehicles || vehicles.length === 0) {
+      div.textContent = 'Nenhum veículo ativo encontrado.';
+      return;
     }
-  },
+
+    div.textContent = JSON.stringify(vehicles, null, 2);
+
+    // Estilo visual semelhante à segunda imagem
+    div.style.backgroundColor = '#f0fff4';      // verde claro
+    div.style.border = '1px solid #c6f6d5';     // verde borda
+    div.style.padding = '16px';
+    div.style.borderRadius = '8px';
+    div.style.fontFamily = 'monospace';
+    div.style.whiteSpace = 'pre';
+    div.style.overflowX = 'auto';
+  } catch (error) {
+    div.textContent = 'Erro: ' + error.message;
+  }
+},
 
   init() {
     document.querySelector('#formEntry').addEventListener('submit', this.registerEntry.bind(this));

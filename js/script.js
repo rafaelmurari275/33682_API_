@@ -12,12 +12,14 @@ const estacionamentoApp = {
 
   setMessage(selector, message, isError = false) {
     const el = document.querySelector(selector);
+    if (!el) return;
     el.textContent = message;
     el.style.color = isError ? 'red' : 'green';
   },
 
   clearMessage(selector) {
-    document.querySelector(selector).textContent = '';
+    const el = document.querySelector(selector);
+    if (el) el.textContent = '';
   },
 
   formatDate(dateString) {
@@ -36,11 +38,42 @@ const estacionamentoApp = {
     const plate = document.querySelector('#plateEntry').value.trim();
     const model = document.querySelector('#modelEntry').value.trim();
 
+    if (!plate) {
+      this.setMessage('#msgEntry', 'Por favor, informe a placa.', true);
+      return;
+    }
+    if (!model) {
+      this.setMessage('#msgEntry', 'Por favor, informe o modelo.', true);
+      return;
+    }
+
     try {
       const result = await this.request('/entry', 'POST', { plate, model });
       this.setMessage('#msgEntry', result.message || 'Entrada registrada!');
+      document.querySelector('#formEntry').reset();
     } catch (error) {
       this.setMessage('#msgEntry', error.message, true);
+    }
+  },
+
+  async updateVehicle(event) {
+    event.preventDefault();
+    this.clearMessage('#msgUpdate');
+
+    const oldPlate = document.querySelector('#plateUpdate').value.trim();
+    const newPlate = document.querySelector('#newPlateUpdate').value.trim();
+
+    if (!oldPlate || !newPlate) {
+      this.setMessage('#msgUpdate', 'Preencha ambas as placas.', true);
+      return;
+    }
+
+    try {
+      const result = await this.request(`/update/${oldPlate}`, 'PUT', { plate: newPlate });
+      this.setMessage('#msgUpdate', result.message || 'Placa atualizada com sucesso!');
+      document.querySelector('#formUpdate').reset();
+    } catch (error) {
+      this.setMessage('#msgUpdate', error.message, true);
     }
   },
 
@@ -48,6 +81,11 @@ const estacionamentoApp = {
     event.preventDefault();
     this.clearMessage('#msgCheck');
     const plate = document.querySelector('#plateCheck').value.trim();
+
+    if (!plate) {
+      this.setMessage('#msgCheck', 'Informe a placa para verificar.', true);
+      return;
+    }
 
     try {
       const result = await this.request(`/check/${plate}`);
@@ -66,9 +104,15 @@ const estacionamentoApp = {
     this.clearMessage('#msgExit');
     const plate = document.querySelector('#plateExit').value.trim();
 
+    if (!plate) {
+      this.setMessage('#msgExit', 'Informe a placa para registrar saída.', true);
+      return;
+    }
+
     try {
       const result = await this.request(`/exit/${plate}`, 'PATCH');
       this.setMessage('#msgExit', result.message || 'Saída registrada!');
+      document.querySelector('#formExit').reset();
     } catch (error) {
       this.setMessage('#msgExit', error.message, true);
     }
@@ -79,9 +123,15 @@ const estacionamentoApp = {
     this.clearMessage('#msgCancel');
     const plate = document.querySelector('#plateCancel').value.trim();
 
+    if (!plate) {
+      this.setMessage('#msgCancel', 'Informe a placa para cancelar registro.', true);
+      return;
+    }
+
     try {
       const result = await this.request(`/cancel/${plate}`, 'DELETE');
       this.setMessage('#msgCancel', result.message || 'Registro cancelado!');
+      document.querySelector('#formCancel').reset();
     } catch (error) {
       this.setMessage('#msgCancel', error.message, true);
     }
@@ -127,6 +177,11 @@ const estacionamentoApp = {
     const div = document.querySelector('#timeResult');
     div.textContent = 'Carregando...';
 
+    if (!plate) {
+      div.textContent = 'Informe a placa para consultar tempo.';
+      return;
+    }
+
     try {
       const data = await this.request(`/time/${plate}`);
 
@@ -146,33 +201,33 @@ const estacionamentoApp = {
     }
   },
 
-async getActiveVehicles() {
-  const div = document.querySelector('#activeVehicles');
-  div.textContent = 'Carregando...';
+  async getActiveVehicles() {
+    const div = document.querySelector('#activeVehicles');
+    div.textContent = 'Carregando...';
 
-  try {
-    const data = await this.request('/active');
-    const vehicles = data.vehicles || data;
+    try {
+      const data = await this.request('/active');
+      const vehicles = data.vehicles || data;
 
-    if (!vehicles || vehicles.length === 0) {
-      div.textContent = 'Nenhum veículo ativo encontrado.';
-      return;
+      if (!vehicles || vehicles.length === 0) {
+        div.textContent = 'Nenhum veículo ativo encontrado.';
+        return;
+      }
+
+      div.textContent = JSON.stringify(vehicles, null, 2);
+
+      // Estilo visual
+      div.style.backgroundColor = '#f0fff4';      // verde claro
+      div.style.border = '1px solid #c6f6d5';     // verde borda
+      div.style.padding = '16px';
+      div.style.borderRadius = '8px';
+      div.style.fontFamily = 'monospace';
+      div.style.whiteSpace = 'pre';
+      div.style.overflowX = 'auto';
+    } catch (error) {
+      div.textContent = 'Erro: ' + error.message;
     }
-
-    div.textContent = JSON.stringify(vehicles, null, 2);
-
-    // Estilo visual semelhante à segunda imagem
-    div.style.backgroundColor = '#f0fff4';      // verde claro
-    div.style.border = '1px solid #c6f6d5';     // verde borda
-    div.style.padding = '16px';
-    div.style.borderRadius = '8px';
-    div.style.fontFamily = 'monospace';
-    div.style.whiteSpace = 'pre';
-    div.style.overflowX = 'auto';
-  } catch (error) {
-    div.textContent = 'Erro: ' + error.message;
-  }
-},
+  },
 
   init() {
     document.querySelector('#formEntry').addEventListener('submit', this.registerEntry.bind(this));
@@ -183,9 +238,8 @@ async getActiveVehicles() {
     document.querySelector('#btnSlots').addEventListener('click', this.getSlots.bind(this));
     document.querySelector('#formTime').addEventListener('submit', this.getTime.bind(this));
     document.querySelector('#btnActiveVehicles').addEventListener('click', this.getActiveVehicles.bind(this));
+    document.querySelector('#formUpdate').addEventListener('submit', this.updateVehicle.bind(this));
   }
 };
 
 document.addEventListener('DOMContentLoaded', () => estacionamentoApp.init());
-
-

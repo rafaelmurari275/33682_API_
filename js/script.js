@@ -56,27 +56,6 @@ const estacionamentoApp = {
     }
   },
 
-  async updateVehicle(event) {
-    event.preventDefault();
-    this.clearMessage('#msgUpdate');
-
-    const oldPlate = document.querySelector('#plateUpdate').value.trim();
-    const newPlate = document.querySelector('#newPlateUpdate').value.trim();
-
-    if (!oldPlate || !newPlate) {
-      this.setMessage('#msgUpdate', 'Preencha ambas as placas.', true);
-      return;
-    }
-
-    try {
-      const result = await this.request(`/update/${oldPlate}`, 'PUT', { plate: newPlate });
-      this.setMessage('#msgUpdate', result.message || 'Placa atualizada com sucesso!');
-      document.querySelector('#formUpdate').reset();
-    } catch (error) {
-      this.setMessage('#msgUpdate', error.message, true);
-    }
-  },
-
   async checkVehicle(event) {
     event.preventDefault();
     this.clearMessage('#msgCheck');
